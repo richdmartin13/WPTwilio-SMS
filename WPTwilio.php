@@ -1,10 +1,9 @@
 <?php
 
 /*
-Plugin Name: WPTwilio
-Plugin URI: https://localhost:4444/
+Plugin Name: WPTwilio SMS
 Description: A wordpress plugin for sending bulk SMS to Twilio Messaging Lists
-Version: 0.1.0
+Version: 0.1.2
 Author: Richard Martin
 */
 
@@ -219,7 +218,7 @@ class WPTwilio {
         try {
             $client = new Client($TWILIO_SID, $TWILIO_TOKEN);
             $response = $client->messages->create(
-                $to,
+                $TWILIO_PHONE,
                 array(
                     "MessagingServiceSid" => $TWILIO_MSSID,
                     "body" => $message
@@ -269,6 +268,38 @@ class WPTwilio {
         });
     }
 
+    /*
+    * Opens a log file for numbers
+    */
+    public function update_log() {
+        $numList = fopen("msgList.txt", "w") or die("Unable to open file!");
+    }
+
+    /**
+    * Register the receive message route.
+    *
+    * @since    0.1.2
+    */
+    function register_receive_message_route() {
+      register_rest_route( 'wptwilio/v1', '/receive_sms', array(
+        'methods' => 'POST',
+        'callback' => 'trigger_receive_sms',
+        ) );
+    }
+
+    /* Recieve sms numbers */
+    public function trigger_recieve_sms() {
+        echo header('content-type: text/xml');
+
+        echo <<<RESPOND
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Response>
+            <Message>Ahoy from Wordpress</Message>
+        </Response>
+        RESPOND;
+        die();
+    }
+
 }
 
 // Create a new wpt instance
@@ -283,3 +314,6 @@ add_action("admin_menu", [$wptInstance , "registerWPTSmsPage"]);
 
 // calls the sending function whenever we try sending messages.
 add_action( 'admin_init', [$wptInstance , "send_message"] );
+
+// Hook the sms recieve trigger function
+add_action( 'rest_api_init', [$wptInstance,'register_receive_message_route']);
