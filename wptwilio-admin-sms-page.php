@@ -1,8 +1,8 @@
-<h2> <?php esc_attr_e( 'SMS Console', 'WpAdminStyle' ); ?></h2>
+<div style="display: flex; flex-flow: row nowrap; align-items: center; justify-content: center; height: 90vh;">
 <div class="wrap">
+<h2> <?php esc_attr_e( 'SMS Console', 'WpAdminStyle' ); ?></h2>
     <div class="metabox-holder columns-2">
         <div class="meta-box-sortables ui-sortable">
-            <div class="postbox">
                 <h2 class="hndle">
                     <span> <?php esc_attr_e( 'SEND SMS', 'WpAdminStyle' ); ?></span>
                 </h2>
@@ -14,7 +14,7 @@
                         <input class="button-primary" type="submit" value="SEND MESSAGE" name="send_sms_message" />
                     </form>
                 </div>
-            </div>
         </div>
     </div>
+</div>
 </div>

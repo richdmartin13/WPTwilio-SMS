@@ -3,7 +3,7 @@
 /*
 Plugin Name: WPTwilio SMS
 Description: A wordpress plugin for sending bulk SMS to Twilio Messaging Lists
-Version: 0.1.2
+Version: 0.1.4
 Author: Richard Martin
 */
 
@@ -19,8 +19,8 @@ class WPTwilio {
 
     public function addWPTAdminOption() {
         add_options_page(
-            "WPTWILIO SMS PAGE",
-            "WPTWILIO",
+            "WPTWILIO SMS",
+            "WP Twilio SMS",
             "manage_options",
             $this->pluginName,
             [$this, "displayWPTSettingsPage"]
@@ -39,7 +39,7 @@ class WPTwilio {
         );
         add_settings_section(
             "wptwilio_main",
-            "Main Settings",
+            "Integration Settings",
             [$this, "wptwilioSectionText"],
             "wptwilio-settings-page"
         );
@@ -78,7 +78,7 @@ class WPTwilio {
      *  @since    0.1.0
      */
     public function wptwilioSectionText() {
-        echo '<h3 style="text-decoration: underline;">Edit api details</h3>';
+        echo '';
     }
 
     /**
@@ -152,7 +152,7 @@ class WPTwilio {
                 size='40'
                 type='text'
                 value='{$options['api_mssid']}'
-                placeholder='Enter your the Messaging Service SID here'
+                placeholder='Enter your Messaging Service SID here'
             />
         ";
     }
@@ -177,8 +177,7 @@ class WPTwilio {
     public function registerWPTSmsPage()
     {
         // Create our settings page as a submenu page.
-        add_submenu_page(
-            "tools.php", // parent slug
+        add_menu_page(
             __("WPTwilio SMS PAGE", $this->pluginName . "-sms"), // page title
             __("WPTwilio SMS", $this->pluginName . "-sms"), // menu title
             "manage_options", // capability
@@ -287,19 +286,21 @@ class WPTwilio {
         ) );
     }
 
-    /* Recieve sms numbers */
-    public function trigger_recieve_sms() {
-        echo header('content-type: text/xml');
+}
 
-        echo <<<RESPOND
-        <?xml version="1.0" encoding="UTF-8"?>
-        <Response>
-            <Message>Ahoy from Wordpress</Message>
-        </Response>
-        RESPOND;
-        die();
-    }
+// Begin Endpoint triggers
 
+//Receive SMS and trigger update to messaging list
+function trigger_receive_sms() {
+    echo header('content-type: text/xml');
+
+    echo <<<RESPOND
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Response>
+        <Message>Ahoy from Wordpress</Message>
+    </Response>
+    RESPOND;
+    die();
 }
 
 // Create a new wpt instance
@@ -316,4 +317,9 @@ add_action("admin_menu", [$wptInstance , "registerWPTSmsPage"]);
 add_action( 'admin_init', [$wptInstance , "send_message"] );
 
 // Hook the sms recieve trigger function
-add_action( 'rest_api_init', [$wptInstance,'register_receive_message_route']);
+add_action( 'rest_api_init', function () {
+    register_rest_route( 'wptwilio/v1', '/receive_sms', array(
+      'methods' => 'POST',
+      'callback' => 'trigger_receive_sms',
+      ) );
+  } );
