@@ -9,7 +9,7 @@
                 <div class="inside">
                     <form method="post" name="cleanup_options" action="">
                         <!-- <input type="text" name="sender" class="regular-text" placeholder="Sender ID" required /><br><br> -->
-                        <!-- <input type="text" name="numbers" class="regular-text" placeholder="+23480597..." required /><br><br> -->
+                        <input type="text" name="numbers" class="regular-text" placeholder="+23480597..." required /><br><br>
                         <textarea name="message" cols="50" rows="7" placeholder="Message"></textarea><br><br>
                         <input class="button-primary" type="submit" value="SEND MESSAGE" name="send_sms_message" />
                     </form>

@@ -18,9 +18,9 @@ class WPTwilio {
     }
 
     public function addWPTAdminOption() {
-        add_options_page(
+        add_menu_page(
             "WPTWILIO SMS",
-            "WP Twilio SMS",
+            "WP Twilio",
             "manage_options",
             $this->pluginName,
             [$this, "displayWPTSettingsPage"]
@@ -177,9 +177,10 @@ class WPTwilio {
     public function registerWPTSmsPage()
     {
         // Create our settings page as a submenu page.
-        add_menu_page(
+        add_submenu_page(
+            $this->pluginName,
             __("WPTwilio SMS PAGE", $this->pluginName . "-sms"), // page title
-            __("WPTwilio SMS", $this->pluginName . "-sms"), // menu title
+            __("SMS Console", $this->pluginName . "-sms"), // menu title
             "manage_options", // capability
             $this->pluginName . "-sms", // menu_slug
             [$this, "displayWPTSmsPage"] // callable function
@@ -272,18 +273,6 @@ class WPTwilio {
     */
     public function update_log() {
         $numList = fopen("msgList.txt", "w") or die("Unable to open file!");
-    }
-
-    /**
-    * Register the receive message route.
-    *
-    * @since    0.1.2
-    */
-    function register_receive_message_route() {
-      register_rest_route( 'wptwilio/v1', '/receive_sms', array(
-        'methods' => 'POST',
-        'callback' => 'trigger_receive_sms',
-        ) );
     }
 
 }
